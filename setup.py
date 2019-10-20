@@ -12,5 +12,6 @@ setup(name='objdet',
       description='Object Detection in Tensorflow',
       author='Manuel Cherep',
       author_email='manuel.cherep@epfl.ch',
-      url='https://github.com/mcherep/objdet'
+      url='https://github.com/mcherep/objdet',
+      include_package_data=True
       )
