@@ -133,6 +133,7 @@ def train(model_path):
 def save_model(model_path):
     """ Save the given model to be loaded later for inference """
 
+    # It breaks if it exists a saved_model dir inside trained
     output_dir = os.path.join(model_path, 'trained')
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
@@ -155,6 +156,6 @@ def load_model(model_dir):
     """ Loads a model """
 
     model_dir = os.path.join(model_dir, 'trained', 'saved_model')
-    model = tf.saved_model.load(str(model_dir))
+    model = tf.saved_model.load_v2(str(model_dir))
     model = model.signatures['serving_default']
     return model
