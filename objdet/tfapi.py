@@ -107,22 +107,27 @@ def transfer_learning(classes, model_name, data_path):
         # in ssd_mobilenet_v2_coco -> comment
         s = re.sub('batch_norm_trainable: true',
                    '# batch_norm_trainable: true', s)
+        # Set the number of steps
+        s = re.sub('num_steps: [0-9]*',
+                   'num_steps: 50000', s)
         f.write(s)
 
 
-def train(model_path, train_steps, eval_steps):
+def train(model_path):
     """ Trains the given model """
     pipeline_config = os.path.join(model_path, 'pipeline.config')
     model_dir = os.path.join(model_path, 'trained')
     if not os.path.exists(model_dir):
         os.mkdir(model_dir)
-    bashCmd = ('python models/research/object_detection/model_main.py'
+    bashCmd = ('python models/research/object_detection/legacy/train.py'
                ' --pipeline_config_path={}'
-               ' --model_dir={}'
-               ' --alsologtostderr'
-               ' --num_train_steps={}'
-               ' --num_eval_steps={}').format(pipeline_config, model_dir, train_steps, eval_steps)
-    subprocess.run(bashCmd.split(), check=True)
+               ' --train_dir={}'
+               ' --logtostderr').format(pipeline_config, model_dir)
+    process = subprocess.run(bashCmd.split(),
+                             stderr=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             universal_newlines=True)
+    print(process.stderr)
 
 
 def save_model(model_path):
