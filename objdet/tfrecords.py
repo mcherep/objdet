@@ -54,7 +54,8 @@ def create_tf_example(filename, labels_df, label_map):
 
     height = img.shape[1]  # Image height
     width = img.shape[0]  # Image width
-    encoded_image_data = img.tobytes()  # Encoded image bytes
+    tf.gfile = tf.io.gfile
+    encoded_image_data = tf.gfile.FastGFile(filename, 'r').read()
     image_format = b'jpg'
 
     xmins = []
