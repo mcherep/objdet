@@ -2,6 +2,8 @@
 
 A collection of functions that allow to perform object detection using any model from the zoo in Tensorflow. The goal is to be able to integrate the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) easily in other projects, allowing transfer learning and training in Google Colab. In order to use it you should choose a model from the [Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md), and preprocess your data to follow the given format below.
 
+**This project is still under heavy testing. It should be production ready soon**
+
 ## Rant
 
 I don't like Tensorflow because I consider it unnecessarily difficult to use. All versions break backwards compatibility, I could print all the future warnings I get and cover myself when I go to sleep, and the word `lightweight` hasn't reached them (to mention a few). I love `Keras`, but in this case it felt like an overkill when most of the things I want to do are already in the Tensorflow Object Detection API. Therefore, I decided to isolate the evil in this repo for others to use it easily. If you've found this repository in desperation, please feel free to share your rant with me. Yours truly. P.D. This code will most likely break in a few months when the developers decide to do some random changes.
