@@ -10,8 +10,12 @@ import tensorflow as tf
 import pandas as pd
 import numpy as np
 import matplotlib.image
+import cv2
 from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
+
+
+LABEL_MAP = 'label_map.pbtxt'
 
 
 def create_tfrecords(data_path, model_name):
@@ -54,8 +58,8 @@ def create_tf_example(filename, labels_df, label_map):
 
     height = img.shape[1]  # Image height
     width = img.shape[0]  # Image width
-    tf.gfile = tf.io.gfile
-    encoded_image_data = tf.gfile.FastGFile(filename, 'r').read()
+    # tf.gfile = tf.io.gfile
+    encoded_image_data = cv2.imencode('.jpg', img)[1].tostring()
     image_format = b'jpg'
 
     xmins = []
