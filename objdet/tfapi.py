@@ -64,7 +64,7 @@ def download_model(model_name):
     os.remove(model_file)
 
 
-def transfer_learning(classes, model_name, data_path, train_dir):
+def transfer_learning(train_steps, classes, model_name, data_path, train_dir):
     """ Prepares the model config for training in a custom
     dataset for our particular problem """
 
@@ -109,7 +109,7 @@ def transfer_learning(classes, model_name, data_path, train_dir):
                    '# batch_norm_trainable: true', s)
         # Set the number of steps
         s = re.sub('num_steps: [0-9]*',
-                   'num_steps: 50000', s)
+                   'num_steps: {}'.format(train_steps), s)
         f.write(s)
 
 
