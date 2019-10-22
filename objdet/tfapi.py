@@ -64,7 +64,7 @@ def download_model(model_name):
     os.remove(model_file)
 
 
-def transfer_learning(classes, model_name, data_path):
+def transfer_learning(classes, model_name, data_path, train_dir):
     """ Prepares the model config for training in a custom
     dataset for our particular problem """
 
@@ -77,7 +77,7 @@ def transfer_learning(classes, model_name, data_path):
         f.write(item)
         f.write("\n")
 
-    model_ckpt = os.path.join(pwd, model_name, 'model.ckpt')
+    model_ckpt = os.path.join(pwd, train_dir, 'model.ckpt')
     train_record = os.path.join(os.path.dirname(pwd),
                                 data_path,
                                 'train',
@@ -113,16 +113,16 @@ def transfer_learning(classes, model_name, data_path):
         f.write(s)
 
 
-def train(model_path):
+def train(model_path, train_dir):
     """ Trains the given model """
     pipeline_config = os.path.join(model_path, 'pipeline.config')
-    model_dir = os.path.join(model_path, 'trained')
-    if not os.path.exists(model_dir):
-        os.mkdir(model_dir)
+    train_dir = os.path.join(train_dir, 'trained')
+    if not os.path.exists(train_dir):
+        os.mkdir(train_dir)
     bashCmd = ('python models/research/object_detection/legacy/train.py'
                ' --pipeline_config_path={}'
                ' --train_dir={}'
-               ' --logtostderr').format(pipeline_config, model_dir)
+               ' --logtostderr').format(pipeline_config, train_dir)
     process = subprocess.run(bashCmd.split(),
                              stderr=subprocess.PIPE,
                              stdout=subprocess.PIPE,
@@ -130,25 +130,23 @@ def train(model_path):
     print(process.stderr)
 
 
-def save_model(model_path):
+def save_model(train_dir):
     """ Save the given model to be loaded later for inference """
 
     # It breaks if it exists a saved_model dir inside trained
-    output_dir = os.path.join(model_path, 'trained')
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+    train_dir = os.path.join(train_dir, 'trained')
 
-    lst = os.listdir(output_dir)
+    lst = os.listdir(train_dir)
     lf = filter(lambda k: 'model.ckpt-' in k, lst)
     last_model = sorted(lf)[-1].replace('.meta', '')
 
     pipeline_config = os.path.join(model_path, 'pipeline.config')
-    trained_checkpoint = os.path.join(output_dir, last_model)
+    trained_checkpoint = os.path.join(train_dir, last_model)
     bashCmd = ('python models/research/object_detection/export_inference_graph.py'
                ' --input_type=image_tensor'
                ' --pipeline_config_path={}'
                ' --trained_checkpoint_prefix={}'
-               ' --output_directory={}').format(pipeline_config, trained_checkpoint, output_dir)
+               ' --output_directory={}').format(pipeline_config, trained_checkpoint, train_dir)
     subprocess.run(bashCmd.split(), check=True)
 
 
