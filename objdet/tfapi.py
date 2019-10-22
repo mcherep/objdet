@@ -153,7 +153,6 @@ def save_model(train_dir):
 def load_model(model_dir):
     """ Loads a model """
 
-    model_dir = os.path.join(model_dir, 'trained', 'saved_model')
-    model = tf.saved_model.load_v2(str(model_dir))
+    model = tf.saved_model.load_v2(model_dir)
     model = model.signatures['serving_default']
     return model
