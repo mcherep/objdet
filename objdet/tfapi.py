@@ -77,7 +77,7 @@ def transfer_learning(train_steps, classes, model_name, data_path, train_dir):
         f.write(item)
         f.write("\n")
 
-    model_ckpt = os.path.join(pwd, train_dir, 'model.ckpt')
+    model_ckpt = os.path.join(pwd, train_dir, 'training', 'model.ckpt')
     train_record = os.path.join(os.path.dirname(pwd),
                                 data_path,
                                 'train',
@@ -116,7 +116,7 @@ def transfer_learning(train_steps, classes, model_name, data_path, train_dir):
 def train(model_path, train_dir):
     """ Trains the given model """
     pipeline_config = os.path.join(model_path, 'pipeline.config')
-    train_dir = os.path.join(train_dir, 'trained')
+    train_dir = os.path.join(train_dir, 'training')
     if not os.path.exists(train_dir):
         os.mkdir(train_dir)
     bashCmd = ('python models/research/object_detection/legacy/train.py'
@@ -134,7 +134,7 @@ def save_model(train_dir):
     """ Save the given model to be loaded later for inference """
 
     # It breaks if it exists a saved_model dir inside trained
-    train_dir = os.path.join(train_dir, 'trained')
+    train_dir = os.path.join(train_dir, 'training')
 
     lst = os.listdir(train_dir)
     lf = filter(lambda k: 'model.ckpt-' in k, lst)
