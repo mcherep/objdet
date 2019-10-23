@@ -19,7 +19,7 @@ LABEL_MAP = 'label_map.pbtxt'
 def install():
     """ Install all the requirements for the API """
 
-    bashCmd = 'git clone --quiet https://github.com/mcherep/models.git'
+    bashCmd = 'git clone --quiet https://github.com/tensorflow/models.git'
     subprocess.call(bashCmd.split())
 
     bashCmd = 'pip install Cython contextlib2 pillow lxml matplotlib pycocotools'
