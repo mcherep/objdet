@@ -48,7 +48,7 @@ def create_tf_example(filename, labels_df, classes):
     width = img.shape[1]  # Image width
     image_format = b'jpg'
 
-    with tf.gfile.FastGFile(img_path, 'rb') as fid:
+    with tf.gfile.FastGFile(filename, 'rb') as fid:
         image_data = fid.read()
 
     xmins = []
