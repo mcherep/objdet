@@ -13,7 +13,7 @@ import matplotlib.image
 import cv2
 
 
-def create_tfrecords(data_path, model_name, classes):
+def create_tfrecords(data_path, classes):
     """ Creates the corresponding tfrecord for the data """
 
     for subdir in os.listdir(data_path):
@@ -69,8 +69,8 @@ def create_tf_example(filename, labels_df, classes):
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': tf.train.Feature(int64_list=tf.train.Int64List(value=[height])),
         'image/width': tf.train.Feature(int64_list=tf.train.Int64List(value=[width])),
-        'image/filename': tf.train.Feature(bytes_list=tf.train.BytesList(value=[filename.encode('utf-8')]),
-        'image/source_id': tf.train.Feature(bytes_list=tf.train.BytesList(value=[filename.encode('utf-8')]),
+        'image/filename': tf.train.Feature(bytes_list=tf.train.BytesList(value=[filename.encode('utf-8')])),
+        'image/source_id': tf.train.Feature(bytes_list=tf.train.BytesList(value=[filename.encode('utf-8')])),
         'image/encoded': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_data])),
         'image/format': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_format])),
         'image/object/bbox/xmin': tf.train.Feature(float_list=tf.train.FloatList(value=xmins)),
