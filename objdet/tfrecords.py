@@ -11,22 +11,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.image
 import cv2
-from object_detection.utils import dataset_util
-from object_detection.utils import label_map_util
 
 
-LABEL_MAP = 'label_map.pbtxt'
-
-
-def create_tfrecords(data_path, model_name):
+def create_tfrecords(data_path, model_name, classes):
     """ Creates the corresponding tfrecord for the data """
-
-    # New path for gfile in tensorflow
-    tf.gfile = tf.io.gfile
-
-    label_map_path = os.path.join(model_name, LABEL_MAP)
-    label_map = label_map_util.create_category_index_from_labelmap(label_map_path,
-                                                                   use_display_name=True)
 
     for subdir in os.listdir(data_path):
         files = os.listdir(os.path.join(data_path, subdir))
@@ -43,53 +31,53 @@ def create_tfrecords(data_path, model_name):
                 filename_full_path = os.path.join(data_path, subdir, filename)
                 tf_example = create_tf_example(filename_full_path,
                                                labels_df,
-                                               label_map)
+                                               classes)
                 writer.write(tf_example.SerializeToString())
 
         writer.close()
 
 
-def create_tf_example(filename, labels_df, label_map):
+def create_tf_example(filename, labels_df, classes):
     """ Creates a TF Example for each image """
 
     # Full path to the image
     img = matplotlib.image.imread(filename)
     boxes_df = labels_df[labels_df.frame == filename.split('/')[-1]]
 
-    height = img.shape[1]  # Image height
-    width = img.shape[0]  # Image width
-    # tf.gfile = tf.io.gfile
-    encoded_image_data = cv2.imencode('.jpg', img)[1].tostring()
+    height = img.shape[0]  # Image height
+    width = img.shape[1]  # Image width
     image_format = b'jpg'
+
+    with tf.gfile.FastGFile(img_path, 'rb') as fid:
+        image_data = fid.read()
 
     xmins = []
     xmaxs = []
     ymins = []
     ymaxs = []
     classes_text = []
-    classes = []
+    classes_ids = []
     for index, row in boxes_df.iterrows():
         # List of normalized coordinates in bounding box (1 per box)
         xmins.append(row.xmin / width)
         xmaxs.append(row.xmax / width)
         ymins.append(row.ymin / height)
         ymaxs.append(row.ymax / height)
-        classes_text.append(label_map.get(row.class_id)
-                            ['name'].encode('utf-8'))
-        classes.append(row.class_id)
+        classes_text.append(classes.get(row.class_id).encode('utf-8'))
+        classes_ids.append(row.class_id)
 
     tf_example = tf.train.Example(features=tf.train.Features(feature={
-        'image/height': dataset_util.int64_feature(height),
-        'image/width': dataset_util.int64_feature(width),
-        'image/filename': dataset_util.bytes_feature(filename.encode('utf-8')),
-        'image/source_id': dataset_util.bytes_feature(filename.encode('utf-8')),
-        'image/encoded': dataset_util.bytes_feature(encoded_image_data),
-        'image/format': dataset_util.bytes_feature(image_format),
-        'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
-        'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
-        'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
-        'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
-        'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
-        'image/object/class/label': dataset_util.int64_list_feature(classes),
+        'image/height': tf.train.Feature(int64_list=tf.train.Int64List(value=[height])),
+        'image/width': tf.train.Feature(int64_list=tf.train.Int64List(value=[width])),
+        'image/filename': tf.train.Feature(bytes_list=tf.train.BytesList(value=[filename.encode('utf-8')]),
+        'image/source_id': tf.train.Feature(bytes_list=tf.train.BytesList(value=[filename.encode('utf-8')]),
+        'image/encoded': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_data])),
+        'image/format': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_format])),
+        'image/object/bbox/xmin': tf.train.Feature(float_list=tf.train.FloatList(value=xmins)),
+        'image/object/bbox/xmax': tf.train.Feature(float_list=tf.train.FloatList(value=xmaxs)),
+        'image/object/bbox/ymin': tf.train.Feature(float_list=tf.train.FloatList(value=ymins)),
+        'image/object/bbox/ymax': tf.train.Feature(float_list=tf.train.FloatList(value=ymaxs)),
+        'image/object/class/text': tf.train.Feature(bytes_list=tf.train.BytesList(value=classes_text)),
+        'image/object/class/label': tf.train.Feature(int64_list=tf.train.Int64List(value=classes)),
     }))
     return tf_example
