@@ -78,6 +78,6 @@ def create_tf_example(filename, labels_df, classes):
         'image/object/bbox/ymin': tf.train.Feature(float_list=tf.train.FloatList(value=ymins)),
         'image/object/bbox/ymax': tf.train.Feature(float_list=tf.train.FloatList(value=ymaxs)),
         'image/object/class/text': tf.train.Feature(bytes_list=tf.train.BytesList(value=classes_text)),
-        'image/object/class/label': tf.train.Feature(int64_list=tf.train.Int64List(value=classes)),
+        'image/object/class/label': tf.train.Feature(int64_list=tf.train.Int64List(value=classes_ids)),
     }))
     return tf_example
