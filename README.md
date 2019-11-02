@@ -1,8 +1,8 @@
 # Object Detection in Tensorflow
 
-A collection of functions that allow to perform object detection using any model from the zoo in Tensorflow. The goal is to be able to integrate the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) easily in other projects, allowing transfer learning and training in Google Colab. In order to use it you should choose a model from the [Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md), and preprocess your data to follow the given format below.
+A collection of functions that allow to perform object detection using any model from the zoo in Tensorflow. The goal is to be able to integrate the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) easily in other projects, allowing transfer learning and training in Google Colab. In order to use it you should choose a model from the [Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md), and preprocess your data to follow the given format below. An example is given in [HandDet](https://github.com/mcherep/handdet).
 
-**This project is still under heavy testing**
+**This project has been tested with Tensorflow 1.15.0. Feel free to help me improve the project!**
 
 ## Rant
 
@@ -20,7 +20,7 @@ Most of the [installation](https://github.com/tensorflow/models/blob/master/rese
 
 ## Data Format
 
-In order to convert your data to TFRecords using `tfrecords.py` you need: A data folder that contains subdirectories such as `train`, `test` and `validation`. Each subdirectory contains images and a .csv file called `labels.csv` with the following fields: frame, xmin, xmax, ymin, ymax, class_id
+In order to convert your data to TFRecords using `tfrecords.py` you need: A data folder that contains subdirectories such as `train`, `test` and `validation`. Each subdirectory contains `.jpg` images and a .csv file called `labels.csv` with the following fields: frame, xmin, xmax, ymin, ymax, class_id
 
 ## Acknowledgements
 
