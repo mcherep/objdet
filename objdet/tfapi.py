@@ -129,6 +129,16 @@ def train(model_path, train_dir):
     print(process.stderr)
 
 
+<  # !python models/research/object_detection/model_main.py \
+#     --pipeline_config_path=ssd_mobilenet_v2_coco_2018_03_29/pipeline.config \
+#     --model_dir=checkpoints \
+#     --num_train_steps=3000 \
+#     --sample_1_of_n_eval_examples=1 \
+#     --alsologtostderr
+
+# !cp ssd_mobilenet_v2_coco_2018_03_29/pipeline.config checkpoints
+
+
 def save_model(train_dir):
     """ Save the given model to be loaded later for inference """
 
